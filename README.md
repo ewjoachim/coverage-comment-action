@@ -125,7 +125,7 @@ coverage:
       id: download
       with:
         name: 'coverage'
-        
+
     - name: Setup Node
       uses: actions/setup-node@v2
 
