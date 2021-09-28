@@ -96,3 +96,45 @@ want, contributions.
 
 ``COMMENT_TEMPLATE`` and ``DIFF_COVER_ARGS`` are somewhat experimental.
 They haven't been thouroughly tested.
+
+## How-To
+
+### How to merge multiple coverage runs
+
+If you have a matrix of jobs each producing their own coverage, then you will want to run the action once on a merged version of `coverage.xml`.
+
+- Inside your matrix, produce your xml files with a unique name (e.g. based on the varying attribute of the matrix). In case you can't do it directly, you can `mv` the file too.
+- Upload each file to an artifact bucket named `coverage`:
+
+```yaml
+- name: Store coverage file
+  uses: actions/upload-artifact@v2
+  with:
+    name: coverage
+    path: coverage.${{ matrix.attribute }}.xml
+```
+- Add a job that will be launched after your matrix, that will merge the coverage files and then run the action:
+
+```
+coverage:
+  name: Coverage
+  runs-on: ubuntu-latest
+  needs: build
+  steps:
+    - uses: actions/download-artifact@v2
+      id: download
+      with:
+        name: 'coverage'
+        
+    - name: Setup Node
+      uses: actions/setup-node@v2
+
+    - name: Produce merged coverage.xml
+      # I have no idea if this works. We should test.
+      run: npx cobertura-merge -o coverage.xml "$(ls -1 coverage.*.xml | xargs -I% package=% | xargs)"
+
+    - name: Display coverage
+      uses: ewjoachim/coverage-comment-action@v1
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
