@@ -167,6 +167,10 @@ def get_diff_coverage_info(config: Config) -> dict:
         return json.loads(f.read())
 
 
+def percent(val: float) -> str:
+    return f"{val:.0%}"
+
+
 def get_markdown_comment(
     coverage_info: dict,
     diff_coverage_info: dict,
@@ -175,10 +179,10 @@ def get_markdown_comment(
 ):
     env = jinja2.Environment()
     template = config.COMMENT_TEMPLATE or pathlib.Path("/var/default.md.j2").read_text()
-    previous_coverage = previous_coverage_rate * 100 if previous_coverage_rate else None
-    coverage = coverage_info["@line-rate"] * 100
+    previous_coverage = previous_coverage_rate if previous_coverage_rate else None
+    coverage = coverage_info["@line-rate"]
     branch_coverage = (
-        coverage_info["@branch-rate"] * 100
+        coverage_info["@branch-rate"]
         if coverage_info.get("@branch-rate")
         else None
     )
@@ -194,6 +198,7 @@ def get_markdown_comment(
         diff_coverage=diff_coverage,
         file_info=file_info,
         marker=MARKER,
+        percent=percent,
     )
 
 
@@ -226,11 +231,11 @@ def post_comment(body: str, gh: github.Github, config: Config) -> None:
 
 
 def compute_badge(coverage_info: dict, config: Config) -> str:
-    rate = int(coverage_info["@line-rate"] * 100)
+    rate = coverage_info["@line-rate"]
 
-    if rate >= config.MINIMUM_GREEN:
+    if rate >= config.MINIMUM_GREEN / 100:
         color = "brightgreen"
-    elif rate >= config.MINIMUM_ORANGE:
+    elif rate >= config.MINIMUM_ORANGE / 100:
         color = "orange"
     else:
         color = "red"
@@ -238,7 +243,8 @@ def compute_badge(coverage_info: dict, config: Config) -> str:
     badge = {
         "schemaVersion": 1,
         "label": "Coverage",
-        "message": f"{rate}%",
+        "message": percent(rate),
+        "value": rate,
         "color": color,
     }
 
@@ -254,7 +260,7 @@ def get_badge_json_url(config: Config) -> str:
 def get_previous_coverage_rate(config: Config) -> Optional[float]:
     try:
         response = requests.get(get_badge_json_url(config=config))
-        return float(response.json()["message"][:-1]) / 100
+        return response.json()["value"]
     except Exception:
         print("Previous coverage results not found, cannot report on evolution.")
         return None
