@@ -34,3 +34,8 @@ repos:
   rev: "v2.34.0"
   hooks:
   - id: pyupgrade
+
+- repo: https://github.com/floatingpurr/sync_with_poetry
+  rev: 0.2.1
+  hooks:
+    - id: sync_with_poetry
