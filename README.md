@@ -7,7 +7,7 @@ I'm in the process of reviewing how this action should work, but it takes
 some time. The problem is described [here](https://github.blog/changelog/2021-02-19-github-actions-workflows-triggered-by-dependabot-prs-will-run-with-read-only-permissions/)
 and [here](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/).
 
-Later update: 
+Later update:
 Since then, I've created [python-coverage-comment-action](https://github.com/ewjoachim/python-coverage-comment-action) which works for external PRs but only supports Python. I have no plan to port the "external PR" part to this action.
 
 ## Presentation
