@@ -1,5 +1,5 @@
 diff-cover
-jinja2
+jinja2==3.0.1
 PyGithub
 xmltodict
 requests
