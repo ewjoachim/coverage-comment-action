@@ -173,8 +173,11 @@ def get_markdown_comment(
     previous_coverage_rate: Optional[float],
     config: Config,
 ):
-    env = jinja2.Environment()
-    template = config.COMMENT_TEMPLATE or pathlib.Path("/var/default.md.j2").read_text()
+    env = jinja2.Environment(
+        loader=jinja2.DictLoader({"default.md.j2": config.COMMENT_TEMPLATE})
+    )
+    template = env.get_template("default.md.j2")
+
     previous_coverage = previous_coverage_rate * 100 if previous_coverage_rate else None
     coverage = coverage_info["@line-rate"] * 100
     branch_coverage = (
@@ -187,7 +190,7 @@ def get_markdown_comment(
         file: {"diff_coverage": stats["percent_covered"]}
         for file, stats in diff_coverage_info["src_stats"].items()
     }
-    return env.from_string(template).render(
+    return template.render(
         previous_coverage=previous_coverage,
         coverage=coverage,
         branch_coverage=branch_coverage,
@@ -195,7 +198,6 @@ def get_markdown_comment(
         file_info=file_info,
         marker=config.MARKER,
     )
-
 
 def is_main_branch(gh: github.Github, config: Config) -> bool:
     repo = gh.get_repo(config.GITHUB_REPOSITORY)
