@@ -15,7 +15,7 @@ import jinja2
 import requests
 import xmltodict
 
-MARKER = """<!-- This comment was produced by coverage-comment-action -->"""
+
 SHIELD_URL = "https://img.shields.io/endpoint?url={url}"
 JSON_URL = "https://raw.githubusercontent.com/wiki/{repo_name}/{filename}"
 
@@ -65,6 +65,7 @@ class Config:
     BADGE_ENABLED: bool = True
     MINIMUM_GREEN: float = 100.0
     MINIMUM_ORANGE: float = 70.0
+    MARKER: str = "<!-- This comment was produced by coverage-comment-action -->"
 
     # Clean methods
     @classmethod
@@ -193,7 +194,7 @@ def get_markdown_comment(
         branch_coverage=branch_coverage,
         diff_coverage=diff_coverage,
         file_info=file_info,
-        marker=MARKER,
+        marker=config.MARKER,
     )
 
 
@@ -216,7 +217,7 @@ def post_comment(body: str, gh: github.Github, config: Config) -> None:
     assert config.GITHUB_PR_NUMBER
     issue = repo.get_issue(config.GITHUB_PR_NUMBER)
     for comment in issue.get_comments():
-        if comment.user.login == me and MARKER in comment.body:
+        if comment.user.login == me and config.MARKER in comment.body:
             print("Update previous comment")
             comment.edit(body=body)
             break
