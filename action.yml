@@ -1,7 +1,7 @@
 name: Coverage Comment
 branding:
-  icon: 'umbrella'
-  color: 'purple'
+  icon: "umbrella"
+  color: "purple"
 description: >
   Publish diff coverage report as PR comment, and create a coverage badge
   to display on the readme.
@@ -55,8 +55,8 @@ inputs:
     required: false
 runs:
   using: docker
-  # image: Dockerfile
-  image: docker://ewjoachim/coverage-comment-action:latest
+  image: Dockerfile
+  # image: docker://ewjoachim/coverage-comment-action:latest
   env:
     GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
     COVERAGE_FILE: ${{ inputs.COVERAGE_FILE }}
