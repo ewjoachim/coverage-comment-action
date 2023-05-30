@@ -199,6 +199,7 @@ def get_markdown_comment(
         marker=config.MARKER,
     )
 
+
 def is_main_branch(gh: github.Github, config: Config) -> bool:
     repo = gh.get_repo(config.GITHUB_REPOSITORY)
 
