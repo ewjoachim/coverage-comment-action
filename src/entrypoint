@@ -15,7 +15,6 @@ import jinja2
 import requests
 import xmltodict
 
-
 SHIELD_URL = "https://img.shields.io/endpoint?url={url}"
 JSON_URL = "https://raw.githubusercontent.com/wiki/{repo_name}/{filename}"
 
