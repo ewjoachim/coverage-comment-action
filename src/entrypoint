@@ -56,6 +56,7 @@ class Config:
 
     GITHUB_BASE_REF: str
     GITHUB_TOKEN: str
+    GITHUB_BASE_URL: str
     GITHUB_REPOSITORY: str
     GITHUB_REF: str
     BADGE_FILENAME: str = "coverage-comment-badge.json"
@@ -117,7 +118,7 @@ class Config:
 
 
 def get_api(config: Config) -> github.Github:
-    return github.Github(config.GITHUB_TOKEN)
+    return github.Github(config.GITHUB_TOKEN, config.GITHUB_BASE_URL)
 
 
 def get_coverage_info(config: Config) -> dict:
