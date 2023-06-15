@@ -6,11 +6,6 @@ description: >
   Publish diff coverage report as PR comment, and create a coverage badge
   to display on the readme.
 inputs:
-  GITHUB_URL:
-    description: >
-      A Github base url, api.github.com by default but can be different in GitHub Enterprise
-    default: "https://api.github.com"
-    required: false
   GITHUB_TOKEN:
     description: >
       A GitHub token to write comments and write the badge to the wiki
