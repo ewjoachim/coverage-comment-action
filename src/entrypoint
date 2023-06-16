@@ -118,7 +118,9 @@ class Config:
 
 
 def get_api(config: Config) -> github.Github:
-    return github.Github(config.GITHUB_TOKEN, config.GITHUB_API_URL)
+    return github.Github(
+        login_or_token=config.GITHUB_TOKEN, base_url=config.GITHUB_API_URL
+    )
 
 
 def get_coverage_info(config: Config) -> dict:
